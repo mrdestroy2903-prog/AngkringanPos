@@ -22,7 +22,9 @@
         <activity
             android:name=".PenjualanActivity"
             android:exported="false" />
-
+        <activity
+            android:name=".UpdateStokActivity"
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="true">

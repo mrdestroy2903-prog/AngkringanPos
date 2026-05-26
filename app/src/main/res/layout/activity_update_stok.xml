@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Update Stok Barang"
+        android:textColor="#FFC107"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Pilih Produk:"
+        android:textColor="#FFFFFF" />
+
+    <Spinner
+        android:id="@+id/spinnerProduk"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Jumlah Tambah Stok:"
+        android:textColor="#FFFFFF" />
+
+    <EditText
+        android:id="@+id/etJumlahTambah"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
+        android:background="#FFFFFF"
+        android:hint="Contoh: 50"
+        android:inputType="number"
+        android:padding="10dp" />
+
+    <Button
+        android:id="@+id/btnSimpanStok"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="30dp"
+        android:backgroundTint="#FFC107"
+        android:text="Simpan Stok Baru"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+</LinearLayout>

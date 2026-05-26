@@ -9,7 +9,10 @@ import com.fajar.angkringanpos.databinding.ActivityPenjualanBinding
 class PenjualanActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPenjualanBinding
     private lateinit var db: DatabaseHelper
-    private var totalBayar: Int = 0 // Variabel penampung total
+    private var totalBayar: Int = 0
+
+    // 1. TAMBAHKAN INI: Keranjang belanja sementara
+    private val keranjangBelanja = mutableListOf<Produk>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,11 +22,12 @@ class PenjualanActivity : AppCompatActivity() {
         db = DatabaseHelper(this)
         val listProduk = db.getAllProduk()
 
-        // Kirim logika klik ke adapter
         val adapter = ProdukAdapter(listProduk) { produk ->
-            // Logika ketika produk diklik:
-            totalBayar += produk.harga // Tambah harga
-            binding.tvTotalHarga.text = "Rp $totalBayar" // Update tampilan text
+            totalBayar += produk.harga
+            binding.tvTotalHarga.text = "Rp $totalBayar"
+
+            // 2. TAMBAHKAN INI: Masukkan produk yang diklik ke keranjang
+            keranjangBelanja.add(produk)
 
             Toast.makeText(this, "${produk.nama} ditambah", Toast.LENGTH_SHORT).show()
         }
@@ -33,6 +37,11 @@ class PenjualanActivity : AppCompatActivity() {
 
         binding.btnSimpanTransaksi.setOnClickListener {
             if (totalBayar > 0) {
+                // 3. TAMBAHKAN INI: Proses potong stok untuk setiap barang di keranjang
+                for (item in keranjangBelanja) {
+                    db.kurangiStok(item.id, 1) // Memotong stok 1 per item
+                }
+
                 db.catatCashflow(totalBayar, "Penjualan Angkringan")
                 Toast.makeText(this, "Transaksi Rp $totalBayar Berhasil!", Toast.LENGTH_LONG).show()
                 finish()
