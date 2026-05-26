@@ -1,59 +1,52 @@
 package com.fajar.angkringanpos
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.fajar.angkringanpos.databinding.ActivityProdukBinding
 
 class ProdukActivity : AppCompatActivity() {
 
-    private lateinit var recyclerProduk: RecyclerView
-    private lateinit var produkList: ArrayList<Produk>
+    private lateinit var binding: ActivityProdukBinding
+    private lateinit var dbHelper: DatabaseHelper
+    private lateinit var adapter: ProdukAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_produk)
 
-        val dbHelper = DatabaseHelper(this)
+        // Menggunakan View Binding agar tidak perlu findViewById lagi
+        binding = ActivityProdukBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        dbHelper.tambahProduk(
-            "Mie Goreng",
-            "Rp10.000",
-            "Stok : 15"
-        )
+        dbHelper = DatabaseHelper(this)
 
-        recyclerProduk = findViewById(R.id.recyclerProduk)
+        // Setup RecyclerView
+        binding.recyclerProduk.layoutManager = LinearLayoutManager(this)
 
-        produkList = ArrayList()
+        // Memuat data pertama kali
+        muatDataProduk()
 
-        produkList.add(
-            Produk(
-                "Fanta Susu",
-                "Rp5.000",
-                "Stok : 12"
-            )
-        )
+        // Logika Tombol Tambah (Asumsi ID tombol di XML kamu adalah btnTambah atau fabTambah)
+        // Jika di XML kamu ada tombol untuk ke halaman tambah, hubungkan di sini:
+        // Cari bagian onCreate, lalu tambahkan ini di bawah muatDataProduk()
+        binding.btnTambahProduk.setOnClickListener {
+            val intent = Intent(this, TambahProdukActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
-        produkList.add(
-            Produk(
-                "Risol Mayo",
-                "Rp7.000",
-                "Stok : 8"
-            )
-        )
+    // Fungsi untuk mengambil data dari Database dan menampilkannya ke List
+    private fun muatDataProduk() {
+        val listProduk = dbHelper.getAllProduk()
+        adapter = ProdukAdapter(listProduk)
+        binding.recyclerProduk.adapter = adapter
+    }
 
-        produkList.add(
-            Produk(
-                "Tahu Bakar",
-                "Rp2.000",
-                "Stok : 20"
-            )
-        )
-
-        recyclerProduk.layoutManager =
-            LinearLayoutManager(this)
-
-        recyclerProduk.adapter =
-            ProdukAdapter(produkList)
+    // Fungsi ini penting: Agar saat kita selesai tambah produk dan kembali ke sini,
+    // daftar produknya langsung terupdate otomatis (refresh).
+    override fun onResume() {
+        super.onResume()
+        muatDataProduk()
     }
 }

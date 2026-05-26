@@ -27,6 +27,10 @@ class MainActivity : AppCompatActivity() {
 
                     true
                 }
+                R.id.nav_jual -> {
+                    startActivity(Intent(this, PenjualanActivity::class.java))
+                    true
+                }
 
                 else -> true
             }
