@@ -12,7 +12,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "angkringan_pos.db"
-        private const val DATABASE_VERSION = 3
+        // 1. NAIKKAN VERSI KE 4 (Wajib agar kolom baru terbentuk)
+        private const val DATABASE_VERSION = 4
 
         const val TABLE_PRODUK = "produk"
         const val COL_ID = "id"
@@ -23,16 +24,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         const val TABLE_CASHFLOW = "cashflow"
         const val COL_CF_ID = "id"
-        const val COL_CF_TIPE = "tipe" // 'MASUK' atau 'KELUAR'
+        const val COL_CF_TIPE = "tipe"
         const val COL_CF_JUMLAH = "jumlah"
         const val COL_CF_KETERANGAN = "keterangan"
-        const val COL_CF_TANGGAL = "tanggal" // Kolom tambahan untuk filter hari ini
+        const val COL_CF_TANGGAL = "tanggal"
+        // Nama kolom tambahan untuk simpan modal per transaksi
+        const val COL_CF_MODAL = "modal_transaksi"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE $TABLE_PRODUK ($COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COL_NAMA TEXT, $COL_HARGA_MODAL INTEGER, $COL_HARGA_JUAL INTEGER, $COL_STOK INTEGER)")
-        // Menambahkan kolom tanggal di tabel cashflow agar bisa difilter per hari
-        db.execSQL("CREATE TABLE $TABLE_CASHFLOW ($COL_CF_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COL_CF_TIPE TEXT, $COL_CF_JUMLAH INTEGER, $COL_CF_KETERANGAN TEXT, $COL_CF_TANGGAL TEXT)")
+
+        // 2. TAMBAHKAN KOLOM modal_transaksi di sini
+        db.execSQL("CREATE TABLE $TABLE_CASHFLOW ($COL_CF_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COL_CF_TIPE TEXT, $COL_CF_JUMLAH INTEGER, $COL_CF_KETERANGAN TEXT, $COL_CF_TANGGAL TEXT, $COL_CF_MODAL INTEGER)")
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
@@ -41,7 +45,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         onCreate(db)
     }
 
-    // Fungsi untuk mengambil semua produk dari DB
     fun getAllProduk(): List<Produk> {
         val list = mutableListOf<Produk>()
         val db = this.readableDatabase
@@ -53,7 +56,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
                 val nama = cursor.getString(1)
                 val hargaJual = cursor.getInt(3)
                 val stok = cursor.getInt(4)
-
                 list.add(Produk(id, nama, hargaJual, stok))
             } while (cursor.moveToNext())
         }
@@ -73,14 +75,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = this.writableDatabase
         db.execSQL("UPDATE $TABLE_PRODUK SET $COL_STOK = $COL_STOK - $jumlahTerjual WHERE $COL_ID = $idProduk")
     }
-    // Fungsi untuk menambah stok saat kulakan/belanja
+
     fun tambahStok(idProduk: Int, jumlahTambah: Int) {
         val db = this.writableDatabase
         db.execSQL("UPDATE $TABLE_PRODUK SET $COL_STOK = $COL_STOK + $jumlahTambah WHERE $COL_ID = $idProduk")
     }
 
-    // --- PERUBAHAN DI SINI: Menambahkan tanggal otomatis ---
-    fun catatCashflow(jumlah: Int, keterangan: String) {
+    // 3. SEKARANG MENERIMA modal SEBAGAI PARAMETER
+    fun catatCashflow(jumlah: Int, modal: Int, keterangan: String) {
         val db = this.writableDatabase
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val tanggalSekarang = sdf.format(Date())
@@ -90,11 +92,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COL_CF_JUMLAH, jumlah)
             put(COL_CF_KETERANGAN, keterangan)
             put(COL_CF_TANGGAL, tanggalSekarang)
+            put(COL_CF_MODAL, modal) // Simpan modal ke DB
         }
         db.insert(TABLE_CASHFLOW, null, v)
     }
 
-    // --- FUNGSI BARU: Untuk menghitung total jualan hari ini ---
     fun getOmzetHariIni(): Int {
         var total = 0
         val db = this.readableDatabase
@@ -111,5 +113,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
         cursor.close()
         return total
+    }
+
+    fun getLabaHariIni(): Int {
+        var totalLaba = 0
+        val db = this.readableDatabase
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val tanggalSekarang = sdf.format(Date())
+
+        // 4. RUMUS PALING AKURAT: Penjualan - Modal yang tercatat
+        val cursor = db.rawQuery(
+            "SELECT SUM($COL_CF_JUMLAH - $COL_CF_MODAL) FROM $TABLE_CASHFLOW WHERE $COL_CF_TANGGAL = ? AND $COL_CF_TIPE = 'MASUK'",
+            arrayOf(tanggalSekarang)
+        )
+
+        if (cursor.moveToFirst()) {
+            totalLaba = cursor.getInt(0)
+        }
+        cursor.close()
+        return totalLaba
     }
 }

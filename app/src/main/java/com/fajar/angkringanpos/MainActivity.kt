@@ -20,7 +20,10 @@ class MainActivity : AppCompatActivity() {
         db = DatabaseHelper(this)
 
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+
+        // Ambil ID TextView dari XML
         val tvOmzet = findViewById<TextView>(R.id.tvOmzetHariIni)
+        val tvLaba = findViewById<TextView>(R.id.tvLabaHariIni)
 
         // MENGHUBUNGKAN MENU CEPAT
         val btnJual = findViewById<CardView>(R.id.btnTambahJualan)
@@ -31,12 +34,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(Intent(this, PenjualanActivity::class.java))
         }
 
-        // Logika Klik Tambah Stok (Sementara ke TambahProdukActivity)
+        // Logika Klik Tambah Stok
         btnStok.setOnClickListener {
             startActivity(Intent(this, UpdateStokActivity::class.java))
         }
 
-        updateDashboard(tvOmzet)
+        // Update data dashboard saat pertama buka
+        updateDashboard(tvOmzet, tvLaba)
 
         bottomNav.setOnItemSelectedListener {
             when(it.itemId){
@@ -53,14 +57,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateDashboard(view: TextView) {
+    // Fungsi updateDashboard yang menerima dua TextView agar tidak merah
+    private fun updateDashboard(tvOmzet: TextView, tvLaba: TextView) {
         val omzet = db.getOmzetHariIni()
-        view.text = "Rp $omzet"
+        val laba = db.getLabaHariIni()
+
+        tvOmzet.text = "Rp $omzet"
+        tvLaba.text = "Rp $laba"
     }
 
     override fun onResume() {
         super.onResume()
+        // Panggil ulang ID saat kembali ke halaman ini agar data terbaru muncul
         val tvOmzet = findViewById<TextView>(R.id.tvOmzetHariIni)
-        updateDashboard(tvOmzet)
+        val tvLaba = findViewById<TextView>(R.id.tvLabaHariIni)
+        updateDashboard(tvOmzet, tvLaba)
     }
 }

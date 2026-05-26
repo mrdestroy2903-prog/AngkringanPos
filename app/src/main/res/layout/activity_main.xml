@@ -3,13 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="#000000"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="20dp"
+        android:paddingBottom="100dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,7 +31,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             app:cardCornerRadius="22dp"
             app:cardElevation="6dp"
@@ -37,7 +39,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp">
 
@@ -46,26 +48,41 @@
                     android:layout_height="wrap_content"
                     android:text="Omzet Hari Ini"
                     android:textColor="#000000"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tvOmzetHariIni"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
                     android:text="Rp 0"
                     android:textColor="#FFC107"
-                    android:textSize="38sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textSize="34sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#EEEEEE"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:text="+12% dari kemarin"
+                    android:text="Laba Bersih Hari Ini"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/tvLabaHariIni"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Rp 0"
                     android:textColor="#4CAF50"
-                    android:textSize="14sp" />
+                    android:textStyle="bold"
+                    android:textSize="24sp"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
@@ -95,19 +112,16 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="💰"
                         android:textSize="34sp"/>
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -116,7 +130,6 @@
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:layout_marginTop="10dp"/>
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
@@ -134,19 +147,16 @@
                 android:foreground="?android:attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true">
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical">
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="📦"
                         android:textSize="34sp"/>
-
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -155,10 +165,8 @@
                         android:textStyle="bold"
                         android:textSize="16sp"
                         android:layout_marginTop="10dp"/>
-
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
         </LinearLayout>
 
         <androidx.cardview.widget.CardView
@@ -168,13 +176,11 @@
             app:cardCornerRadius="22dp"
             app:cardElevation="6dp"
             app:cardBackgroundColor="#FFFFFF">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="20dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -182,7 +188,6 @@
                     android:textColor="#000000"
                     android:textStyle="bold"
                     android:textSize="18sp"/>
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -191,7 +196,6 @@
                     android:textStyle="bold"
                     android:textSize="30sp"
                     android:layout_marginTop="14dp"/>
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -199,7 +203,6 @@
                     android:textColor="#757575"
                     android:textSize="14sp"
                     android:layout_marginTop="6dp"/>
-
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
