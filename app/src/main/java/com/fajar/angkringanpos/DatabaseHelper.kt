@@ -48,15 +48,19 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     fun getAllProduk(): List<Produk> {
         val list = mutableListOf<Produk>()
         val db = this.readableDatabase
+        // Ambil semua kolom
         val cursor = db.rawQuery("SELECT * FROM $TABLE_PRODUK", null)
 
         if (cursor.moveToFirst()) {
             do {
                 val id = cursor.getInt(0)
                 val nama = cursor.getString(1)
-                val hargaJual = cursor.getInt(3)
-                val stok = cursor.getInt(4)
-                list.add(Produk(id, nama, hargaJual, stok))
+                val hargaModal = cursor.getInt(2) // AMBIL KOLOM KE-2 (Harga Modal)
+                val hargaJual = cursor.getInt(3)  // KOLOM KE-3 (Harga Jual)
+                val stok = cursor.getInt(4)       // KOLOM KE-4 (Stok)
+
+                // Masukkan semua data ke objek Produk termasuk hargaModal
+                list.add(Produk(id, nama, hargaJual, stok, hargaModal))
             } while (cursor.moveToNext())
         }
         cursor.close()

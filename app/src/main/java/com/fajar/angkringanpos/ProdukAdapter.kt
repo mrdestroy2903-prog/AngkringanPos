@@ -5,10 +5,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import java.text.NumberFormat
+import java.util.Locale
 
 class ProdukAdapter(
     private val listProduk: List<Produk>,
-    private val onItemClick: ((Produk) -> Unit)? = null // Parameter tambahan untuk deteksi klik
+    private val onItemClick: ((Produk) -> Unit)? = null
 ) : RecyclerView.Adapter<ProdukAdapter.ProdukViewHolder>() {
 
     class ProdukViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -27,10 +29,13 @@ class ProdukAdapter(
         val produk = listProduk[position]
 
         holder.txtNamaProduk.text = produk.nama
-        holder.txtHarga.text = "Rp ${produk.harga}"
+
+        // Tampilkan harga dengan format Rupiah yang rapi (Contoh: Rp 4.000)
+        holder.txtHarga.text = formatRupiah(produk.hargaJual.toLong())
+
+        // Stok tetap angka biasa sesuai permintaan mas
         holder.txtStok.text = "Stok: ${produk.stok}"
 
-        // Logika Klik: Hanya berjalan jika onItemClick diisi (seperti di halaman Kasir)
         holder.itemView.setOnClickListener {
             onItemClick?.invoke(produk)
         }
@@ -38,5 +43,13 @@ class ProdukAdapter(
 
     override fun getItemCount(): Int {
         return listProduk.size
+    }
+
+    // Fungsi Helper untuk memformat angka ke Rupiah
+    private fun formatRupiah(number: Long): String {
+        val localeID = Locale("in", "ID")
+        val numberFormat = NumberFormat.getCurrencyInstance(localeID)
+        numberFormat.maximumFractionDigits = 0
+        return numberFormat.format(number).replace("Rp", "Rp ").trim()
     }
 }
